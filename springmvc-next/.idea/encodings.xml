@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/01-springmvc-入门案例" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/02-springmvc-响应json数据" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/03-springmvc-文件上传" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/04-springmvc-异常处理" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/05-springmvc-拦截器" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/06-ssm-整合" charset="UTF-8" />
+  </component>
+</project>

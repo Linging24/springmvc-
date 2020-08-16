@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--创建spring容器时扫描的包-->
+    <context:component-scan base-package="com.linging"/>
+
+    <!--配置视图解析器-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--自定义类型转换器=》 日期字符串转日期-->
+    <bean id="conversionServiceFactoryBean" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <!--往ConversionServiceFactoryBean类中的converters属性，注入数据，converters是一个set集合-->
+        <property name="converters">
+           <set>
+              <bean class="com.linging.config.StringToDateConverter"/>
+           </set>
+       </property>
+    </bean>
+
+    <!--配置spring开启注解mvc的支持，注册自定义类型转换器，使其生效-->
+    <mvc:annotation-driven conversion-service="conversionServiceFactoryBean"/>
+
+</beans>
