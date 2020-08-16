@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+<!--spring创建容器时扫描的包-->
+<context:component-scan base-package="com.linging"/>
+
+<!--1、引入外部文件-->
+<!--<context:property-placeholder location="jdbc.properties"/>-->
+
+<!--2、引入外部文件-->
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="jdbc.properties"/>
+</bean>
+
+<!--配置数据源-->
+<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <property name="driverClass" value="${jdbc.driver}"/>
+    <property name="jdbcUrl" value="${jdbc.url}"/>
+    <property name="user" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+</bean>
+
+<!--配置jdbctemplate-->
+<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource" ref="dataSource"/>
+</bean>
+
+<!--配置事务管理器-->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"/>
+</bean>
+
+<!--事务的配置-->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <!--配置事务属性
+        read-only：是否是只读事务，默认为false，不只读
+        propagation：指定事务的传播行为
+        isolation：指定事务的隔离级别，m默认是使用数据库的默认级别
+        timeout：知道个超时时间，默认为：-1，永不超时。
+        rollback-for：用于指定一个异常，当执行产生该异常时，事务回滚。产生其他异常，事务不回滚。没有默认值，任何异常不回滚。
+        no-rollback-for：用于指定一个异常，当产生该异常时，事务不回滚，产生其他异常时，事务回滚，没有默认值，任何异常都回滚。
+    -->
+    <tx:attributes>
+        <tx:method name="save*" propagation="SUPPORTS" read-only="true"/>
+        <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+        <tx:method name="*" propagation="REQUIRED" read-only="false"/>
+    </tx:attributes>
+</tx:advice>
+
+
+<!--aop切入点的配置-->
+<aop:config>
+    <!--通用切入点表达式的配置-->
+    <aop:pointcut id="pointCut" expression="execution(* com.linging.service.impl.*.*(..))"/>
+
+    <!--建立事务通知和切入点表达式的联系-->
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="pointCut"/>
+</aop:config>
+</beans>

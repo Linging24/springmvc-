@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--
+        创建bean的三种方式
+            1.通过默认构造函数创建
+            2.通过spring管理静态工厂，使用静态工厂的方法来创建对象
+                class:静态工厂的全限定类名
+                factory-method:静态工厂获取对象的静态方法
+            3.通过spring管理实例工厂，使用实例工厂的方法来创建对象
+                factory-bean: 实例工厂的id
+                factory-method: 实例工厂获取对象的方法
+    -->
+    <!--1-->
+    <bean id="accountService" class="com.linging.service.impl.AccountServiceImpl"></bean>
+    <!--2-->
+    <bean id="staticAccountService" class="com.linging.factory.StaticFactory" factory-method="createAccountServiceByStatic"></bean>
+    <!--3 -->
+    <bean id="instanceAccountService" factory-bean="instanceFatory" factory-method="createAccountServiceByInstance"></bean>
+    <bean id="instanceFatory" class="com.linging.factory.InstanceFactory"></bean>
+
+    <!--
+        能注入的数据类型大致分为三类：
+            1、基本数据类型和String
+            2、其他bean(在ioc容器的bean)
+            3、复杂类型/集合类型
+        依赖注入的三种方式：
+            1、构造函数注入
+            2、set方法注入
+            3、注解注入
+    -->
+    <!--1-->
+    <bean id="diAccount" class="com.linging.pojo.DIAccount">
+        <constructor-arg name="id" value="1"></constructor-arg>
+        <constructor-arg name="name" value="张三"></constructor-arg>
+        <constructor-arg name="date" ref="now"></constructor-arg>
+    </bean>
+    <bean id="now" class="java.util.Date">
+        <constructor-arg name="s" value="1999/01/02"></constructor-arg>
+    </bean>
+
+    <!--2-->
+    <bean id="diAccount2" class="com.linging.pojo.DIAccount">
+        <property name="id" value="2"></property>
+        <property name="name" value="李四"></property>
+        <property name="date" ref="now"></property>
+    </bean>
+
+    <!--注入集合属性，采用set注入-->
+    <!-- 注入集合数据
+        List 结构的：
+            array,list,set
+        Map 结构的
+            map,entry,props,prop
+     -->
+    <bean id="diAccount3" class="com.linging.pojo.DIAccount">
+        <!--注入数组-->
+        <property name="myStrs">
+            <array>
+                <value>aaaa</value>
+                <value>bbbb</value>
+                <value>cccc</value>
+            </array>
+        </property>
+
+        <!--注入list-->
+        <property name="myList">
+            <list>
+                <value>aaaa</value>
+                <value>bbbb</value>
+                <value>cccc</value>
+            </list>
+        </property>
+
+        <!--注入set-->
+        <property name="mySet">
+            <set>
+                <value>1111</value>
+                <value>2222</value>
+                <value>3333</value>
+            </set>
+        </property>
+
+        <!--注入map-->
+        <property name="myMap">
+            <map>
+                <entry key="aaa" value="111"></entry>
+                <entry key="bbb" value="222"></entry>
+                <entry key="ccc" value="333"></entry>
+            </map>
+        </property>
+
+        <!--注入properties-->
+        <property name="myProps">
+            <props>
+                <prop key="111">aaa</prop>
+                <prop key="222">bbb</prop>
+                <prop key="333">ccc</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--告知spring创建容器时要扫描的包-->
+    <!--<context:component-scan base-package="com.linging"></context:component-scan>-->
+
+</beans>
